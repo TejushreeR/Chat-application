@@ -1,0 +1,35 @@
+# Chat Application Client
+import socket
+
+def start_client():
+    # Create a socket object
+    client_socket = socket.socket(socket.AF_INET, socket.SOCK_STREAM)
+    host = '127.0.0.1'  # Server IP
+    port = 12345        # Server Port
+
+    try:
+        # Connect to the server
+        client_socket.connect((host, port))
+        print("Connected to the server. Type 'exit' to leave the chat.")
+
+        while True:
+            # Send a message to the server
+            client_message = input("You: ")
+            client_socket.sendall(client_message.encode())
+            if client_message.lower() == 'exit':
+                print("You ended the chat.")
+                break
+
+            # Receive message from the server
+            server_message = client_socket.recv(1024).decode()
+            if not server_message or server_message.lower() == 'exit':
+                print("Connection closed by the server.")
+                break
+
+            print(f"Server: {server_message}")
+    finally:
+        client_socket.close()
+        print("Client closed.")
+
+if __name__ == "__main__":
+    start_client()
